@@ -35,7 +35,7 @@ def main(argv=None):
         try:
             progname = argv[0]
             opts, args = getopt.getopt(argv[1:], OPTS['str'], OPTS['list'])
-        except getopt.error, msg:
+        except getopt.error as msg:
             raise Usage(msg)
 
         LYRICS_MODE = False
@@ -43,10 +43,10 @@ def main(argv=None):
         # process options
         for o, a in opts:
             if o in ('-h', '--help'):
-                print __doc__
+                print (__doc__)
                 sys.exit(0)
             elif o in ('-v', '--version'):
-                print VERSION
+                print (VERSION)
                 sys.exit(0)
             elif o in ('-l', '--lyrics'):
                 LYRICS_MODE = True
@@ -62,18 +62,19 @@ def main(argv=None):
             f.close()
             if LYRICS_MODE:
                 lyrics = chopro2lyrics(chopro)
-                print lyrics
+                print (lyrics)
             else:
                 html = chopro2html(chopro)
-                print html
+                print (html)
 
-    except Usage, err:
-        print >> sys.stderr, err.msg
-        print >> sys.stderr, "for help use --help"
+    except Usage as err:
+        # TODO: Check if there is a better solution or if this is fine.
+        sys.stderr.write(err.msg + '\n')
+        sys.stderr.write('for help use --help\n')
         return 3.14159
 
 def chopro2html(chopro_text):
-    from chopro.core import ChoPro
+    from core import ChoPro
     chopro = ChoPro(chopro_text)
     html = chopro.get_html()
     return html

@@ -189,7 +189,7 @@ class ChoPro(object):
     def _process_chopro_line_comment(self):
         gre, html = self.gre, self.body_html
         comment = gre.last_match.group(1)
-        html.append('<!-- %s -->"' % comment)
+        html.append('<!-- %s -->' % comment)
 
     def _process_chopro_line_command(self):
         gre, html = self.gre, self.body_html

@@ -3,78 +3,50 @@
 Convert ChoPro/Chordpro to HTML
 
 Usage:
-    chopro2html <chopro_file>
+    chopro2html.py [(-l | --lyrics)] <chopro_file>
+    chopro2html.py (-h | --help)
+    chopro2html.py --version
 
 Example:
-    chopro2html twinkle_twinkle_little_star.chopro > twinkle.html
+    chopro2html.py twinkle_twinkle_little_star.chopro > twinkle.html
 """
 
-import getopt
+from docopt import docopt
 import sys
+import os
 
-VERSION = '0.1.8'
+with open('VERSION') as version_file:
+    VERSION = version_file.read().strip()
 
-class Usage(Exception):
-    def __init__(self, msg):
-        self.msg = msg
+
+def print_usage():
+    print(__doc__)
 
 def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-
-    OPTS = {
-        'str' : 'hvl',
-        'list' : [
-            'help',
-            'version',
-            'lyrics',
-        ],
-    }
-
-    try:
-        try:
-            progname = argv[0]
-            opts, args = getopt.getopt(argv[1:], OPTS['str'], OPTS['list'])
-        except getopt.error as msg:
-            raise Usage(msg)
-
-        LYRICS_MODE = False
-
-        # process options
-        for o, a in opts:
-            if o in ('-h', '--help'):
-                print (__doc__)
-                sys.exit(0)
-            elif o in ('-v', '--version'):
-                print (VERSION)
-                sys.exit(0)
-            elif o in ('-l', '--lyrics'):
-                LYRICS_MODE = True
-            else:
-                raise Usage('Unrecognized option: %s' % o)
-
-        if len(args) == 0:
-            raise Usage('Missing expected input: ChoPro file path')
-        else:
-            chopro_file_path = args[0]
-            f = open(chopro_file_path, 'r')
-            chopro = f.read()
-            f.close()
-            if LYRICS_MODE:
-                lyrics = chopro2lyrics(chopro)
-                print (lyrics)
-            else:
-                html = chopro2html(chopro)
-                print (html)
-
-    except Usage as err:
-        # TODO: Check if there is a better solution or if this is fine.
-        sys.stderr.write(err.msg + '\n')
-        sys.stderr.write('for help use --help\n')
-        return 3.14159
+    LYRICS_MODE = False
+    arguments = docopt(__doc__, version=VERSION)
+    if arguments['--help']:
+        print_usage()
+        sys.exit(0)
+    if arguments['--version']:
+        print(VERSION)
+        sys.exit(0)
+    if arguments['--lyrics']:
+        LYRICS_MODE = True
+    
+    chopro_file_path = arguments['<chopro_file>']
+    f = open(chopro_file_path, 'r')
+    chopro = f.read()
+    f.close()
+    if LYRICS_MODE:
+        lyrics = chopro2lyrics(chopro)
+        print (lyrics)
+    else:
+        html = chopro2html(chopro)
+        print (html)
 
 def chopro2html(chopro_text):
-    from core import ChoPro
+    from chopro.core import ChoPro
     chopro = ChoPro(chopro_text)
     html = chopro.get_html()
     return html

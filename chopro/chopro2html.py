@@ -1,14 +1,14 @@
-"""chopro2html.py
+"""chopro2html
 
 Convert ChoPro/Chordpro to HTML
 
 Usage:
-    chopro2html.py [(-l | --lyrics)] <chopro_file>
-    chopro2html.py (-h | --help)
-    chopro2html.py --version
+    chopro2html [(-l | --lyrics)] <chopro_file>
+    chopro2html (-h | --help)
+    chopro2html --version
 
 Example:
-    chopro2html.py twinkle_twinkle_little_star.chopro > twinkle.html
+    chopro2html twinkle_twinkle_little_star.chopro > twinkle.html
 """
 
 from docopt import docopt
